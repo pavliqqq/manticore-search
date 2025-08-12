@@ -8,16 +8,31 @@ services:
             - "8080:80"
         depends_on:
             - app
+
     app:
         build:
-          context: .
-          dockerfile: docker/php/Dockerfile
+            context: .
+            dockerfile: docker/php/Dockerfile
         volumes:
             - ./:/var/www
         env_file:
             - .env
         depends_on:
             - mysql
+
+    mysql:
+        image: mysql:8.0
+        restart: always
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./docker/mysql:/var/lib/mysql
+            - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+        environment:
+            MYSQL_DATABASE: manticore
+            MYSQL_ROOT_PASSWORD: mWLU!20L?2C=Gs#
+            MYSQL_USER: manticore
+            MYSQL_PASSWORD: R94h8hN^j-
 
     manticore:
         image: manticoresearch/manticore
@@ -29,22 +44,14 @@ services:
             - ./manticore/data:/var/lib/manticore/data
             - ./docker/manticore/manticore.conf:/etc/manticoresearch/manticore.conf
         ulimits:
-          nproc: 65535
-          nofile:
-            soft: 65535
-            hard: 65535
-          memlock:
-            soft: -1
-            hard: -1
-
-    mysql:
-        image: mysql:8.0
-        restart: always
-        ports:
-            - "3306:3306"
-        volumes:
-            - ./docker/mysql:/var/lib/mysql
-            - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
-        environment:
-          MYSQL_DATABASE: manticore
-          MYSQL_ROOT_PASSWORD: mWLU!20L?2C=Gs#
+            nproc: 65535
+            nofile:
+                soft: 65535
+                hard: 65535
+            memlock:
+                soft: -1
+                hard: -1
+        command: >
+            sh -c "indexer --all && searchd --nodetach"
+        depends_on:
+            - mysql

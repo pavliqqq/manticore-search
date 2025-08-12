@@ -11,7 +11,7 @@
             />
             <BaseUl
                 v-if="query"
-                class="mt-4 rounded-lg border border-gray-300 bg-white shadow-md"
+                class="mt-4 rounded-lg border border-gray-300 bg-white shadow-md max-h-60 overflow-y-auto"
             >
                 <BaseLi
                     v-for="item in suggestions"

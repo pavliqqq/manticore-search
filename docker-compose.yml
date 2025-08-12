@@ -53,5 +53,3 @@ services:
                 hard: -1
         command: >
             sh -c "indexer --all && searchd --nodetach"
-        depends_on:
-            - mysql

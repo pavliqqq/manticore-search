@@ -1,0 +1,50 @@
+services:
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        ports:
+            - "8080:80"
+        depends_on:
+            - app
+    app:
+        build:
+          context: .
+          dockerfile: docker/php/Dockerfile
+        volumes:
+            - ./:/var/www
+        env_file:
+            - .env
+        depends_on:
+            - mysql
+
+    manticore:
+        image: manticoresearch/manticore
+        restart: always
+        ports:
+            - "9306:9306"
+            - "9308:9308"
+        volumes:
+            - ./manticore/data:/var/lib/manticore/data
+            - ./docker/manticore/manticore.conf:/etc/manticoresearch/manticore.conf
+        ulimits:
+          nproc: 65535
+          nofile:
+            soft: 65535
+            hard: 65535
+          memlock:
+            soft: -1
+            hard: -1
+
+    mysql:
+        image: mysql:8.0
+        restart: always
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./docker/mysql:/var/lib/mysql
+            - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+        environment:
+          MYSQL_DATABASE: manticore
+          MYSQL_ROOT_PASSWORD: mWLU!20L?2C=Gs#

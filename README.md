@@ -19,25 +19,31 @@ cp .env.example .env
 ```
 Edit the .env file to configure your environment variables (database, etc.):
 
-### 3. Install Dependencies
-
-```bash
-composer install
-```
-
-### 4. Generate key
-
-```bash
-php artisan key:generate
-```
-
-### 5. Launch Containers
+### 3. Launch Containers
 
 ```bash
 docker compose up --build
 ```
 
-### 6. Install JS dependencies
+### 4. Connecting to app
+
+```bash
+docker compose exec app bash
+```
+
+### 5. Install Dependencies
+
+```bash
+composer install
+```
+
+### 6. Generate key
+
+```bash
+php artisan key:generate
+```
+
+### 7. Install JS dependencies
 
 ```bash
 npm install
